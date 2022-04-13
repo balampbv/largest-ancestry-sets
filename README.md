@@ -29,3 +29,7 @@ CLI to fetch the largest ancestry sets for the block using blockstream.
 3 Transaction =>  tx7  count =>  3
 4 Transaction =>  tx11  count =>  1
 ```
+### For smaller input (test.json file)
+
+
+![Screenshot](https://github.com/balampbv/largest-ancestry-sets/blob/main/Screenshot%202022-04-13%20180537.jpg)
