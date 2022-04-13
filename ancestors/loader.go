@@ -91,7 +91,7 @@ func FindAncestors(blockHash string) {
 
 	for i := 0; i < 10; i++ {
 		tx := h.Pop()
-		fmt.Println(i, " => ", tx.(TransactionCount).TransactionID)
+		fmt.Println(i+1, "Transaction => ", tx.(TransactionCount).TransactionID, " count => ", tx.(TransactionCount).Count)
 	}
 
 }

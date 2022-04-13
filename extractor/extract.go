@@ -28,7 +28,6 @@ type InTransaction struct {
 
 func Extractor(blockHash string) {
 	blockInfo := GetBlockDetails(blockHash)
-	blockInfo.TXcount = 100
 
 	transactionMap := make(map[string][]InTransaction)
 	globalMap := make(map[string][]InTransaction)
