@@ -23,29 +23,34 @@ type Transaction struct {
 }
 
 type InTransaction struct {
-	TransactionID string `json:"txid"`
+	TransactionID string `json:"Txid"`
 }
 
 func Extractor(blockHash string) {
 	blockInfo := GetBlockDetails(blockHash)
+	// blockInfo.TXcount = 100
 
 	transactionMap := make(map[string][]InTransaction)
+	globalMap := make(map[string][]InTransaction)
 
 	for i := 0; i < blockInfo.TXcount; i += 25 {
 		ExtractTransactions(blockHash, i, transactionMap)
-
-		file, _ := json.MarshalIndent(transactionMap, "", " ")
-
-		f, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
-		if err != nil {
-			panic(err)
+		for k, v := range transactionMap {
+			globalMap[k] = v
 		}
+	}
 
-		defer f.Close()
+	file, _ := json.MarshalIndent(globalMap, "", " ")
 
-		if _, err = f.WriteString(string(file)); err != nil {
-			panic(err)
-		}
+	f, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+	if err != nil {
+		panic(err)
+	}
+
+	defer f.Close()
+
+	if _, err = f.WriteString(string(file)); err != nil {
+		panic(err)
 	}
 }
 

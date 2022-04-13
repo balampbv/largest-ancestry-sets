@@ -8,7 +8,7 @@ import (
 )
 
 type InTransaction struct {
-	TransactionID string `json:"txid"`
+	TransactionID string `json:"Txid"`
 }
 
 func LoadFile(blockHash string) {
@@ -22,10 +22,8 @@ func LoadFile(blockHash string) {
 	defer jsonFile.Close()
 
 	byteValue, _ := ioutil.ReadAll(jsonFile)
-	//fmt.Println(string(byteValue))
 
 	var transactions map[string][]InTransaction
 	json.Unmarshal(byteValue, &transactions)
-
-	fmt.Println(transactions)
+	fmt.Println(transactions["ffd3d66ae8507af903102c5cf3d8a061e0253ebfbae02dc3a7a0603b5adb12d6"])
 }
