@@ -22,14 +22,15 @@ CLI to fetch the largest ancestry sets for the block using blockstream.
 9 Transaction =>  4ff8b7315c83c718926290fb636f2f112143439192640ebda0fd23dbfe108aed  count =>  100
 10 Transaction =>  847578ab1bfbca68ca3d37898765362f5d22060a18c98c4ad6fc3f946e244e6f  count =>  100
 
-
--> find_ancestors test
+```
+### For smaller input (test.json file)
+```
+-> find_ancestors test 
 1 Transaction =>  tx1  count =>  9
 2 Transaction =>  tx2  count =>  5
 3 Transaction =>  tx7  count =>  3
 4 Transaction =>  tx11  count =>  1
 ```
-### For smaller input (test.json file)
 
 
 ![Screenshot](https://github.com/balampbv/largest-ancestry-sets/blob/main/Screenshot%202022-04-13%20180537.jpg)
