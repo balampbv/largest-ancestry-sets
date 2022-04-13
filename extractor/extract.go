@@ -5,9 +5,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 )
+
+const filename = "000000000000000000076c036ff5119e5a5a74df77abf64203473364509f7732.json"
 
 type BlockInfo struct {
 	ID      string `json:"id"`
@@ -24,12 +27,25 @@ type InTransaction struct {
 }
 
 func Extractor(blockHash string) {
-	// blockInfo := GetBlockDetails(blockHash)
+	blockInfo := GetBlockDetails(blockHash)
 
-	transactionMap := make(map[string][]string)
+	transactionMap := make(map[string][]InTransaction)
 
-	for i := 0; i < 50; i += 25 {
+	for i := 0; i < blockInfo.TXcount; i += 25 {
 		ExtractTransactions(blockHash, i, transactionMap)
+
+		file, _ := json.MarshalIndent(transactionMap, "", " ")
+
+		f, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+		if err != nil {
+			panic(err)
+		}
+
+		defer f.Close()
+
+		if _, err = f.WriteString(string(file)); err != nil {
+			panic(err)
+		}
 	}
 }
 
@@ -59,7 +75,7 @@ func GetBlockDetails(blockHash string) BlockInfo {
 }
 
 //block 680000 - 000000000000000000076c036ff5119e5a5a74df77abf64203473364509f7732
-func ExtractTransactions(blockHash string, offset int, transactionMap map[string][]string) {
+func ExtractTransactions(blockHash string, offset int, transactionMap map[string][]InTransaction) {
 	transactions := []Transaction{}
 
 	c := http.Client{Timeout: time.Duration(1) * time.Second}
@@ -79,11 +95,7 @@ func ExtractTransactions(blockHash string, offset int, transactionMap map[string
 	json.Unmarshal(body, &transactions)
 
 	for i := 0; i < len(transactions); i++ {
-		inputs := []string{}
-		for j := 0; j < len(transactions[i].InTransactions); j++ {
-			inputs = append(inputs, transactions[i].InTransactions[j].TransactionID)
-		}
-		transactionMap[transactions[i].TransactionID] = inputs
+		transactionMap[transactions[i].TransactionID] = transactions[i].InTransactions
 	}
 
 	fmt.Printf("Body : %v", transactionMap)
