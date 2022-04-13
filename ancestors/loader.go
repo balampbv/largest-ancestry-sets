@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"sort"
 )
 
 type TransactionCount struct {
@@ -57,22 +58,34 @@ func LoadFileToStructs(blockHash string) map[string][]InTransaction {
 
 func FindAncestors(blockHash string) {
 	parentToChildMap := LoadFileToStructs(blockHash)
-	childToParentMap := make(map[string][]string)
-	for txId, value := range parentToChildMap {
-		for _, inTx := range value {
-			//fmt.Println(txId, "  ", inTx.TransactionID)
-			val := childToParentMap[inTx.TransactionID]
-			childToParentMap[inTx.TransactionID] = append(val, txId)
-		}
+
+	ancestorCount := make(map[string]int)
+	for k, _ := range parentToChildMap {
+		ancestorCount[k] = findAncestorCount(parentToChildMap, k, 0)
+		// fmt.Println(k, " ", ancestorCount[k])
 	}
 
+	var result []TransactionCount
+	for k, v := range ancestorCount {
+		result = append(result, TransactionCount{
+			TransactionID: k,
+			Count:         v,
+		})
+	}
+
+	//Sort based on the ancestor count
+	sort.Slice(result[:], func(i, j int) bool {
+		return result[i].Count < result[j].Count
+	})
+
+	//Heap to return the last 1o transactions
 	h := &TxHeap{}
 	heap.Init(h)
 
-	for k, v := range childToParentMap {
+	for _, v := range result {
 		h.Push(TransactionCount{
-			TransactionID: k,
-			Count:         len(v),
+			TransactionID: v.TransactionID,
+			Count:         v.Count,
 		})
 	}
 
@@ -81,18 +94,17 @@ func FindAncestors(blockHash string) {
 		fmt.Println(i, " => ", tx.(TransactionCount).TransactionID)
 	}
 
-	// ancestorMap := make(map[string][]string)
-	// for child, parents := range childToParentMap { //fetch all parents for a child
-	// 	for _, parent := range parents { //for each parent
-	// 		val := ancestorMap[child]
-	// 		for _, v := range childToParentMap[parent] { //fetch the parents
-	// 			ancestorMap[child] = append(val, v)
-	// 		}
-	// 	}
-	// }
+}
 
-	// for k, v := range ancestorMap {
-	// 	fmt.Println(k, " ", v)
-	// }
+//findAncestorCount recursive funtctions to find the ancestors
+func findAncestorCount(childMap map[string][]InTransaction, txId string, result int) int {
+	parents, ok := childMap[txId]
+	if !ok {
+		return 1
+	}
+	for i := 0; i < len(parents); i++ {
+		result = result + findAncestorCount(childMap, parents[i].TransactionID, result)
+	}
 
+	return result
 }
