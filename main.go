@@ -21,7 +21,7 @@ func main() {
 		text = strings.Replace(text, "\n", "", -1)
 		inputArr := strings.Split(text, " ")
 		switch inputArr[0] {
-		case "extract_block":
+		case "extract_block": //extract_block 000000000000000000076c036ff5119e5a5a74df77abf64203473364509f7732
 			blockID := inputArr[1]
 			extractor.GetBlockDetails(blockID)
 		}

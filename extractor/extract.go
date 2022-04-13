@@ -1,6 +1,7 @@
 package extractor
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -8,6 +9,8 @@ import (
 )
 
 type BlockInfo struct {
+	ID      string `json:"id"`
+	TXcount int    `json:"tx_count"`
 }
 
 func GetBlockDetails(blockHash string) {
@@ -24,8 +27,12 @@ func GetBlockDetails(blockHash string) {
 		fmt.Printf("Error %s", err)
 		return
 	}
+	blockDetails := BlockInfo{}
+	json.Unmarshal(body, &blockDetails)
 
 	fmt.Printf("Body : %s", body)
+	fmt.Printf("Tx_Count %d", blockDetails.TXcount)
+
 }
 
 //block 680000 - 000000000000000000076c036ff5119e5a5a74df77abf64203473364509f7732
