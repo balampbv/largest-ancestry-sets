@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bitgo/extractor"
 	"bufio"
 	"fmt"
 	"os"
@@ -22,7 +23,7 @@ func main() {
 		switch inputArr[0] {
 		case "extract_block":
 			blockID := inputArr[1]
-			fmt.Println(blockID)
+			extractor.GetBlockDetails(blockID)
 		}
 
 	}
