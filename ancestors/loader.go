@@ -58,6 +58,11 @@ func LoadFileToStructs(blockHash string) map[string][]InTransaction {
 
 func FindAncestors(blockHash string) {
 	parentToChildMap := LoadFileToStructs(blockHash)
+	// for k, v := range parentToChildMap {
+	// 	fmt.Println(k, "  ", v)
+	// }
+
+	// fmt.Println(len(parentToChildMap))
 
 	ancestorCount := make(map[string]int)
 	for k, _ := range parentToChildMap {
@@ -89,7 +94,7 @@ func FindAncestors(blockHash string) {
 		})
 	}
 
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 10 && h.Len() != 0; i++ {
 		tx := h.Pop()
 		fmt.Println(i+1, "Transaction => ", tx.(TransactionCount).TransactionID, " count => ", tx.(TransactionCount).Count)
 	}
@@ -100,10 +105,10 @@ func FindAncestors(blockHash string) {
 func findAncestorCount(childMap map[string][]InTransaction, txId string, result int) int {
 	parents, ok := childMap[txId]
 	if !ok {
-		return 1
+		return result
 	}
 	for i := 0; i < len(parents); i++ {
-		result = result + findAncestorCount(childMap, parents[i].TransactionID, result)
+		result = findAncestorCount(childMap, parents[i].TransactionID, 1+result)
 	}
 
 	return result
