@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bitgo/ancestors"
 	"bitgo/extractor"
 	"bufio"
 	"fmt"
@@ -24,6 +25,9 @@ func main() {
 		case "extract_block": //extract_block 000000000000000000076c036ff5119e5a5a74df77abf64203473364509f7732
 			blockID := inputArr[1]
 			extractor.Extractor(blockID)
+		case "find_ancestors": //find_ancestors 000000000000000000076c036ff5119e5a5a74df77abf64203473364509f7732
+			blockID := inputArr[1]
+			ancestors.LoadFile(blockID)
 		}
 
 	}
